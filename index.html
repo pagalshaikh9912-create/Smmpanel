@@ -1,0 +1,6843 @@
+Skip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remainSkip to content
+Navigation Menu
+pagalshaikh9912-create
+smm-panel-project
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Commit ad815b3
+orchids-app[bot]
+orchids-app[bot]
+authored
+30 minutes ago
+Verified
+feat: initial commit for SMM Panel Project
+main
+1 parent 
+4a06d61
+ commit 
+ad815b3
+File tree
+Filter files…
+.env
+.gitignore
+README.md
+bun.lock
+components.json
+drizzle.config.ts
+drizzle
+0000_familiar_magik.sql
+meta
+0000_snapshot.json
+_journal.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+public
+file.svg
+globe.svg
+next.svg
+vercel.svg
+window.svg
+src
+app
+admin
+orders
+page.tsx
+page.tsx
+services
+page.tsx
+tickets
+page.tsx
+users
+page.tsx
+api
+admin
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+users
+route.ts
+auth
+login
+route.ts
+signup
+route.ts
+orders
+route.ts
+services
+route.ts
+stats
+route.ts
+tickets
+route.ts
+dashboard
+add-funds
+page.tsx
+new-order
+page.tsx
+orders
+page.tsx
+page.tsx
+faq
+page.tsx
+favicon.ico
+global-error.tsx
+globals.css
+layout.tsx
+login
+page.tsx
+page.tsx
+services
+page.tsx
+signup
+page.tsx
+support
+page.tsx
+components
+ErrorReporter.tsx
+Navbar.tsx
+ProtectedRoute.tsx
+ui
+accordion.tsx
+alert-dialog.tsx
+alert.tsx
+aspect-ratio.tsx
+avatar.tsx
+badge.tsx
+breadcrumb.tsx
+button-group.tsx
+button.tsx
+calendar.tsx
+card.tsx
+carousel.tsx
+chart.tsx
+checkbox.tsx
+collapsible.tsx
+command.tsx
+context-menu.tsx
+dialog.tsx
+drawer.tsx
+dropdown-menu.tsx
+empty.tsx
+field.tsx
+form.tsx
+hover-card.tsx
+input-group.tsx
+input-otp.tsx
+input.tsx
+item.tsx
+kbd.tsx
+label.tsx
+menubar.tsx
+navigation-menu.tsx
+pagination.tsx
+popover.tsx
+progress.tsx
+radio-group.tsx
+resizable.tsx
+scroll-area.tsx
+select.tsx
+separator.tsx
+sheet.tsx
+sidebar.tsx
+skeleton.tsx
+slider.tsx
+sonner.tsx
+spinner.tsx
+switch.tsx
+table.tsx
+tabs.tsx
+textarea.tsx
+toggle-group.tsx
+toggle.tsx
+tooltip.tsx
+contexts
+AuthContext.tsx
+db
+index.ts
+schema.ts
+seeds
+orders.ts
+services.ts
+tickets.ts
+transactions.ts
+users.ts
+hooks
+use-mobile.ts
+use-toast.ts
+lib
+hooks
+use-mobile.tsx
+utils.ts
+visual-edits
+VisualEditsMessenger.tsx
+component-tagger-loader.js
+tsconfig.json
+Some content is hidden
+Large Commits have some content hidden by default. Use the searchbox below for content that may be hidden.
+121 files changed
++24908
+-2
+lines changed
+Search within code
+ 
+‎.env‎
++2
+Lines changed: 2 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,2 @@
+TURSO_CONNECTION_URL=libsql://db-597feb16-25ba-4104-ba73-bf24f323338e-orchids.aws-us-west-2.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjQ3ODE1NTMsImlkIjoiNDBmY2FmNjItZWU0Mi00YWM3LWFlZDUtZTYzNGJmYjNhNjc1IiwicmlkIjoiMGMyZTZmOTQtNjRmNC00ZGNiLTkwODItZWUyODRkOGJmYmM1In0.LEBu2s8q7Y2jVret-4Df_rAGiPEcXcsAINndWOdkYALK-6Gsvp9SLynUSUqAfajB_oT2fBaM9vIxkkU6I1INAg
+‎src/db/seeds/tickets.ts‎
++87
+Lines changed: 87 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,87 @@
+import { db } from '@/db';
+import { tickets } from '@/db/schema';
+async function main() {
+    const sampleTickets = [
+        {
+            userId: 2,
+            subject: 'Order not starting',
+            message: 'I placed an order for Instagram followers 2 hours ago but it hasn\'t started yet. Order ID: 4. Please help.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Refund request',
+            message: 'My TikTok likes order was cancelled. Can I get a refund? Order ID: 8',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Service availability',
+            message: 'When will you add Twitter/X services? I need followers and retweets for my account.',
+            status: 'open',
+            adminReply: null,
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'Payment issue',
+            message: 'I tried to add funds but payment failed. Please check.',
+            status: 'answered',
+            adminReply: 'Hi John, we\'ve checked your payment and it seems there was a temporary gateway issue. Please try again. If the problem persists, contact us with transaction ID.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Drop in followers',
+            message: 'I ordered 5000 Instagram followers last month but now I only have 4500. What happened?',
+            status: 'answered',
+            adminReply: 'Hello Sarah, some drop is normal (mentioned in service description). This service has a 30-day refill guarantee. We\'ll refill the dropped followers within 24 hours.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 4,
+            subject: 'Bulk order discount',
+            message: 'I want to place a large order for YouTube views (500k+). Do you offer discounts for bulk orders?',
+            status: 'answered',
+            adminReply: 'Hi Mike, yes we do offer discounts for bulk orders. Please contact us via email at bulk@smmpanel.com with your requirements and we\'ll provide a custom quote.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 2,
+            subject: 'How to place order',
+            message: 'I\'m new here. How do I place an order for Instagram likes?',
+            status: 'closed',
+            adminReply: 'Welcome! To place an order: 1. Add funds to your account 2. Select service from services page 3. Enter your Instagram post link 4. Choose quantity 5. Submit order. It\'s that simple!',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+            userId: 3,
+            subject: 'Order completed successfully',
+            message: 'Just wanted to say thank you! My Facebook page likes order completed perfectly. Great service!',
+            status: 'closed',
+            adminReply: 'Thank you for your positive feedback, Sarah! We\'re glad you\'re satisfied with our service. Feel free to reach out if you need anything else.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+    ];
+    await db.insert(tickets).values(sampleTickets);
+    
+    console.log('✅ Tickets seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/transactions.ts‎
++141
+Lines changed: 141 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,141 @@
+import { db } from '@/db';
+import { transactions } from '@/db/schema';
+async function main() {
+    const sampleTransactions = [
+        {
+            userId: 2,
+            amount: 200.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-01T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -12.50,
+            type: 'order',
+            description: 'Order #1 - Instagram Followers',
+            createdAt: new Date('2024-12-03T14:20:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -5.00,
+            type: 'order',
+            description: 'Order #2 - Instagram Likes',
+            createdAt: new Date('2024-12-05T09:15:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -150.00,
+            type: 'order',
+            description: 'Order #3 - YouTube Views',
+            createdAt: new Date('2024-12-08T16:45:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #4 - TikTok Followers',
+            createdAt: new Date('2024-12-12T11:30:00Z').toISOString(),
+        },
+        {
+            userId: 2,
+            amount: 100.00,
+            type: 'deposit',
+            description: 'Funds added via Stripe',
+            createdAt: new Date('2024-12-15T13:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 300.00,
+            type: 'deposit',
+            description: 'Funds added via Cryptocurrency',
+            createdAt: new Date('2024-12-02T08:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -16.00,
+            type: 'order',
+            description: 'Order #5 - Telegram Premium Members',
+            createdAt: new Date('2024-12-04T15:30:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -20.00,
+            type: 'order',
+            description: 'Order #6 - Facebook Page Likes',
+            createdAt: new Date('2024-12-06T10:45:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -40.00,
+            type: 'order',
+            description: 'Order #7 - TikTok Likes',
+            createdAt: new Date('2024-12-09T14:00:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: -6.00,
+            type: 'order',
+            description: 'Order #8 - Instagram Story Views',
+            createdAt: new Date('2024-12-11T09:20:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 6.00,
+            type: 'refund',
+            description: 'Partial refund for Order #8',
+            createdAt: new Date('2024-12-13T16:15:00Z').toISOString(),
+        },
+        {
+            userId: 3,
+            amount: 50.00,
+            type: 'deposit',
+            description: 'Funds added via PayPal',
+            createdAt: new Date('2024-12-16T12:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 150.00,
+            type: 'deposit',
+            description: 'Funds added via Credit Card',
+            createdAt: new Date('2024-12-03T11:00:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -12.00,
+            type: 'order',
+            description: 'Order #9 - YouTube Subscribers',
+            createdAt: new Date('2024-12-07T13:45:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -4.00,
+            type: 'order',
+            description: 'Order #10 - Facebook Post Likes',
+            createdAt: new Date('2024-12-10T10:30:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: -2.40,
+            type: 'order',
+            description: 'Order #11 - Instagram Saves',
+            createdAt: new Date('2024-12-14T15:20:00Z').toISOString(),
+        },
+        {
+            userId: 4,
+            amount: 75.00,
+            type: 'refund',
+            description: 'Full refund for cancelled Order #12',
+            createdAt: new Date('2024-12-17T09:00:00Z').toISOString(),
+        },
+    ];
+    await db.insert(transactions).values(sampleTransactions);
+    
+    console.log('✅ Transactions seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/db/seeds/users.ts‎
++52
+Lines changed: 52 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,52 @@
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import bcrypt from 'bcrypt';
+async function main() {
+    const sampleUsers = [
+        {
+            email: 'admin@smmpanel.com',
+            password: bcrypt.hashSync('admin7860', 10),
+            fullName: 'Admin User',
+            role: 'admin',
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'john@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'John Doe',
+            role: 'user',
+            balance: 150.50,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'sarah@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Sarah Smith',
+            role: 'user',
+            balance: 250.00,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            email: 'mike@test.com',
+            password: bcrypt.hashSync('password123', 10),
+            fullName: 'Mike Johnson',
+            role: 'user',
+            balance: 75.25,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+    ];
+    await db.insert(users).values(sampleUsers);
+    
+    console.log('✅ Users seeder completed successfully');
+}
+main().catch((error) => {
+    console.error('❌ Seeder failed:', error);
+});
+‎src/hooks/use-mobile.ts‎
++19
+Lines changed: 19 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,19 @@
+import * as React from "react"
+const MOBILE_BREAKPOINT = 768
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+  return !!isMobile
+}
+‎src/hooks/use-toast.ts‎
++12
+Lines changed: 12 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,12 @@
+// Simple toast hook for demo purposes
+export function useToast() {
+  return {
+    toast: ({ title, variant }: { title: string; variant?: 'default' | 'destructive' }) => {
+      if (variant === 'destructive') {
+        alert(`Error: ${title}`);
+      } else {
+        alert(title);
+      }
+    }
+  };
+}
+‎src/lib/hooks/use-mobile.tsx‎
++21
+Lines changed: 21 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,21 @@
+import * as React from 'react';
+const MOBILE_BREAKPOINT = 768;
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined,
+  );
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener('change', onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return !!isMobile;
+}
+‎src/lib/utils.ts‎
++6
+Lines changed: 6 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+‎src/visual-edits/VisualEditsMessenger.tsx‎
++2,159
+Lines changed: 2159 additions & 0 deletions
+Large diffs are not rendered by default.
+‎src/visual-edits/component-tagger-loader.js‎
++460
+Lines changed: 460 additions & 0 deletions
+Large diffs are not rendered by default.
+‎tsconfig.json‎
++42
+Lines changed: 42 additions & 0 deletions
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're not receiving notifications from this thread.
+
+7 files remain
